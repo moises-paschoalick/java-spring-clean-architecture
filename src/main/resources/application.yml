@@ -1,6 +1,8 @@
 spring:
   application:
     name: cleanarch
+  mongodb:
+    uri: mongodb://root:example@localhost:27017/cleanarch?authSource=admin
 
 paschoalick:
   client:

@@ -5,25 +5,25 @@ public class Address {
     public Address() {
     }
 
-    public Address(String stree, String city, String state) {
-        this.stree = stree;
+    public Address(String street, String city, String state) {
+        this.street = street;
         this.city = city;
         this.state = state;
     }
 
-    private String stree;
+    private String street;
 
     private String city;
 
     private String state;
 
 
-    public String getStree() {
-        return stree;
+    public String getStreet() {
+        return street;
     }
 
-    public void setStree(String stree) {
-        this.stree = stree;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getCity() {
