@@ -8,9 +8,13 @@ application **core** completely isolated from frameworks and the outside world.
 
 Reference (PT-BR): [Descomplicando a Clean Architecture: Luizalabs](https://medium.com/luizalabs/descomplicando-a-clean-architecture-cf4dfc4a1ac6)
 
+📚 **Documentation**
+- [Clean Architecture (conceptual notes, PT-BR)](docs/clean-architecture.md)
+- [Find Customer by ID (work-in-progress feature, PT-BR)](docs/find-customer-by-id.md)
+
 ## The layers
 
-![Clean Architecture](docs/Clean%20Architecture/image.png)
+![Clean Architecture](docs/clean-architecture/image.png)
 
 | Ring | Meaning                                                           |
 |------|-------------------------------------------------------------------|
@@ -21,7 +25,7 @@ Reference (PT-BR): [Descomplicando a Clean Architecture: Luizalabs](https://medi
 
 Compared to the traditional Spring layered approach:
 
-![Layered vs Clean](docs/Clean%20Architecture/image%202.png)
+![Layered vs Clean](docs/clean-architecture/image-2.png)
 
 | Layered (Spring)            | Clean Architecture           |
 |-----------------------------|------------------------------|
@@ -32,7 +36,7 @@ Compared to the traditional Spring layered approach:
 
 ## Package structure
 
-![Simple Clean Architecture](docs/Clean%20Architecture/image%201.png)
+![Simple Clean Architecture](docs/clean-architecture/image-1.png)
 
 The package layout enforces the **dependency rule**: `core` must not depend on `dataprovider`,
 `entrypoint`, or any framework. The outer layers depend on `core`: never the reverse.
@@ -148,3 +152,5 @@ address service before persisting. Returns `200 OK` with an empty body on succes
 ## Status
 
 Work in progress. The Kafka consumer entrypoint is planned but not yet implemented.
+A *Find Customer by ID* use case is also being built. See
+[docs/find-customer-by-id.md](docs/find-customer-by-id.md) for details.
