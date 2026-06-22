@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "string")
 public interface CustomerEntityMapper {
 
-    CustomerEntity toCustomerEntity(Customer costomer);
+    CustomerEntity toCustomerEntity(Customer customer);
+
+    Customer toCustomer(CustomerEntity customerEntity);
 
 }

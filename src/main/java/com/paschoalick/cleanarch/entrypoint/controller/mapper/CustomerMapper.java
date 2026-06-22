@@ -2,6 +2,7 @@ package com.paschoalick.cleanarch.entrypoint.controller.mapper;
 
 import com.paschoalick.cleanarch.core.domain.Customer;
 import com.paschoalick.cleanarch.entrypoint.controller.request.CustomerRequest;
+import com.paschoalick.cleanarch.entrypoint.controller.respone.CustomerResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,5 +13,7 @@ public interface CustomerMapper {
     @Mapping(target = "address", ignore = true)
     @Mapping(target = "isValidCpf", ignore = true)
     Customer toCustomer(CustomerRequest customerRequest);
+
+    CustomerResponse toCustomerRespone(Customer customer);
 
 }
