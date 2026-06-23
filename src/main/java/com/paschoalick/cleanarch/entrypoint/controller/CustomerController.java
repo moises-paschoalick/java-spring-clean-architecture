@@ -2,6 +2,7 @@ package com.paschoalick.cleanarch.entrypoint.controller;
 
 import com.paschoalick.cleanarch.core.dataprovider.InsertCustomer;
 import com.paschoalick.cleanarch.core.domain.Customer;
+import com.paschoalick.cleanarch.core.usecase.DeleteCustomerByIdUseCase;
 import com.paschoalick.cleanarch.core.usecase.FindCustomerByIdUseCase;
 import com.paschoalick.cleanarch.core.usecase.InsertCustomerUseCase;
 import com.paschoalick.cleanarch.core.usecase.UpdateCustomerUseCase;
@@ -27,6 +28,8 @@ public class CustomerController {
     @Autowired
     private UpdateCustomerUseCase updateCustomerUseCase;
 
+    @Autowired
+    private DeleteCustomerByIdUseCase deleteCustomerByIdUseCase;
 
     @Autowired
     private CustomerMapper customerMapper;
@@ -60,6 +63,12 @@ public class CustomerController {
         var customer = customerMapper.toCustomer(customerRequest);
         customer.setId(id);
         updateCustomerUseCase.update(customer, customerRequest.getZipCode());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable final String id) {
+        deleteCustomerByIdUseCase.delete(id);
         return ResponseEntity.noContent().build();
     }
 
