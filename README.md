@@ -47,7 +47,8 @@ com.paschoalick.cleanarch
 │   ├── domain                # plain Java POJOs (Customer, Address): no Lombok, no Spring
 │   ├── dataprovider          # output ports: interfaces the use cases depend on
 │   │   ├── InsertCustomer
-│   │   └── FindAddressByZipCode
+│   │   ├── FindAddressByZipCode
+│   │   └── SendCpfForValidation   # publishes the CPF for async validation
 │   └── usecase               # use case interfaces + impl (constructor injection only)
 │       └── impl
 │
@@ -57,8 +58,17 @@ com.paschoalick.cleanarch
 │   ├── client                # OpenFeign client + response DTO + MapStruct mapper
 │   └── repository            # Spring Data MongoDB repo + entity documents + mapper
 │
+├── config                    # @Configuration / @Bean wiring (use cases + Kafka)
+│   ├── InsertCustomerConfig          # builds non-Spring use case impls
+│   ├── FindCustomerByIdConfig
+│   ├── UpdateCustomerConfig
+│   ├── DeleteCustomerByIdConfig
+│   ├── KafkaProducerConfig           # ProducerFactory / KafkaTemplate
+│   └── KafkaConsumerConfig           # ConsumerFactory / listener container
+│
 └── entrypoint               # how the application is accessed
-    └── controller            # REST controller + request DTO + mapper
+    ├── controller            # REST controller + request/response DTO + mapper
+    └── consumer              # Kafka consumer + message DTO (CustomerMessage)
 ```
 
 > **POJO**: *Plain Old Java Object*. A regular Java class with no ties to any framework,
@@ -82,17 +92,19 @@ CustomerController          (entrypoint)
   → InsertCustomerUseCase   (core: orchestrates the rule)
       → FindAddressByZipCode  (core port) → Feign client → external address service
       → InsertCustomer        (core port) → MongoDB repository
+      → SendCpfForValidation  (core port) → Kafka producer → validation topic
 ```
 
 `InsertCustomerUseCaseImpl` resolves the address from the zip code, attaches it to the customer,
-and persists it: speaking only in domain types, with no framework imports.
+persists it, and finally publishes the CPF for asynchronous validation: speaking only in domain
+types, with no framework imports.
 
 ## Tech stack
 
-- **Java 21**, **Spring Boot 4.1.0**, **Spring Cloud 2025.0.0**
+- **Java 21**, **Spring Boot 3.4.6**, **Spring Cloud 2024.0.1**
 - Spring Web, Spring Data MongoDB, Spring Validation
 - Spring Cloud OpenFeign (external address lookup)
-- Spring for Apache Kafka (consumer entrypoint: planned)
+- Spring for Apache Kafka (CPF validation producer + consumer)
 - MapStruct (DTO/entity ↔ domain mapping) and Lombok (outer layers only)
 - Gradle wrapper
 
@@ -149,8 +161,24 @@ Content-Type: application/json
 All fields are `@NotBlank`. The service resolves the full address from `zipCode` via the external
 address service before persisting. Returns `200 OK` with an empty body on success.
 
+## CPF validation flow (Kafka)
+
+Once a customer is created, the CPF is published to a Kafka topic. A (mocked) external API reads
+the CPF, validates the information and publishes the result back to another topic; the consumer
+on our side picks it up and updates the customer (`isValidCpf`).
+
+![Kafka producer/consumer](docs/kafka/kafka-producer-consumer.png)
+
 ## Status
 
-Work in progress. The Kafka consumer entrypoint is planned but not yet implemented.
+Work in progress. Current state:
+
+- ✅ Customer CRUD use cases (insert, find by id, update, delete) wired through `config` `@Bean` factories.
+- ✅ REST entrypoint (`CustomerController`) for the create flow.
+- ✅ Kafka producer/consumer configuration (`KafkaProducerConfig` / `KafkaConsumerConfig`) and the
+  `SendCpfForValidation` port, plumbed into `InsertCustomerUseCaseImpl`.
+- 🚧 `SendCpfForValidationImpl` adapter and the Kafka consumer listener are stubbed and still being
+  implemented; the CPF validation round-trip is not yet wired end to end.
+
 A *Find Customer by ID* use case is also being built. See
 [docs/find-customer-by-id.md](docs/find-customer-by-id.md) for details.
