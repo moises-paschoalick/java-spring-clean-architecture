@@ -1,4 +1,4 @@
-package com.paschoalick.cleanarch.entrypoint.controller.respone;
+package com.paschoalick.cleanarch.entrypoint.controller.response;
 
 import lombok.Data;
 
