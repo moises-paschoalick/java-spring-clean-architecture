@@ -1,14 +1,12 @@
 package com.paschoalick.cleanarch.entrypoint.controller;
 
-import com.paschoalick.cleanarch.core.dataprovider.InsertCustomer;
-import com.paschoalick.cleanarch.core.domain.Customer;
 import com.paschoalick.cleanarch.core.usecase.DeleteCustomerByIdUseCase;
 import com.paschoalick.cleanarch.core.usecase.FindCustomerByIdUseCase;
 import com.paschoalick.cleanarch.core.usecase.InsertCustomerUseCase;
 import com.paschoalick.cleanarch.core.usecase.UpdateCustomerUseCase;
 import com.paschoalick.cleanarch.entrypoint.controller.mapper.CustomerMapper;
 import com.paschoalick.cleanarch.entrypoint.controller.request.CustomerRequest;
-import com.paschoalick.cleanarch.entrypoint.controller.respone.CustomerResponse;
+import com.paschoalick.cleanarch.entrypoint.controller.response.CustomerResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
